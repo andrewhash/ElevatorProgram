@@ -30,14 +30,22 @@ class Elevator {
     private int currentFloor;
     private int direction;
     private int capacity;
-    private List<Passenger> passengers;
+    private PriorityQueue<Passenger> passengers;
 
     // Constructor for creating an elevator with a specified capacity.
     public Elevator(int capacity) {
         this.currentFloor = 1;
         this.direction = 1;
         this.capacity = capacity;
-        this.passengers = new ArrayList<>();
+
+        // Custom comparator for PriorityQueue
+        this.passengers = new PriorityQueue<>((p1, p2) -> {
+            if (direction == 1) {
+                return Integer.compare(p1.getDestinationFloor(), p2.getDestinationFloor());
+            } else {
+                return Integer.compare(p2.getDestinationFloor(), p1.getDestinationFloor());
+            }
+        });
     }
 
     // Getter method for getting the current floor of the elevator.
@@ -56,7 +64,7 @@ class Elevator {
     }
 
     // Getter method for getting the list of passengers inside the elevator.
-    public List<Passenger> getPassengers() {
+    public PriorityQueue<Passenger> getPassengers() {
         return passengers;
     }
 
@@ -202,7 +210,7 @@ class ElevatorSimulation {
 
             // Calculate statistics
             for (Elevator elevator : elevatorsList) {
-                List<Passenger> passengers = elevator.getPassengers();
+                PriorityQueue<Passenger> passengers = elevator.getPassengers();
                 for (Passenger passenger : passengers) {
                     int conveyanceTime = tick - passenger.getArrivalTick();
                     totalConveyanceTime += conveyanceTime;
